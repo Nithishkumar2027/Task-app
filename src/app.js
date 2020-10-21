@@ -8,6 +8,7 @@ require('./db/mongoose')
 
 // Importing models
 const User = require('./models/User')
+const Task = require('./models/Task')
 
 const app = express()
 app.use(express.json())
@@ -34,6 +35,21 @@ app.post('/users', (req, res) => {
     })
 })
 
+// Creating Task
+app.post('/tasks', (req, res) => {
+    const task = new Task(req.body)
+    task.save().then((result) => {
+        res.status(201).json({
+            msg: 'Task created successfully 🔥',
+            result
+        })
+    }).catch((err) => {
+        res.status(400).json({
+            msg: 'Error in creating Task',
+            err
+        })
+    })
+})
 
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
