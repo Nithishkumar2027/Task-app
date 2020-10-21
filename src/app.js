@@ -50,7 +50,7 @@ app.get('/users/:id', (req, res) => {
     User.findById(_id).then((user) => {
         if (!user) {
             return res.status(404).json({
-                msg: `No user with id ${_id} found`
+                msg: 'No user  found'
             })
         }
         res.send(user)
@@ -72,6 +72,30 @@ app.post('/tasks', (req, res) => {
             msg: 'Error in creating Task',
             err
         })
+    })
+})
+
+// Fetching tasks
+app.get('/tasks', (req,res) => {
+    Task.find({}).then((tasks) => {
+        res.json(tasks)
+    }).catch((err) => {
+        res.status(500).send()
+    })
+})
+
+// Fetching particular task
+app.get('/tasks/:id', (req, res) => {
+    const _id = req.params.id
+    Task.findById(_id).then((task) => {
+        if(!task){
+            return res.status(404).json({
+                msg: 'Task not found'
+            })
+        }
+        res.json(task)
+    }).catch((err) => {
+        res.status(500).send()
     })
 })
 
