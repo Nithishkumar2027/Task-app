@@ -35,6 +35,30 @@ app.post('/users', (req, res) => {
     })
 })
 
+// Fetching all users
+app.get('/users', (req, res) => {
+    User.find({}).then((users) => {
+        res.json(users)
+    }).catch((err) => {
+        res.status(500).send()
+    })
+})
+
+// Fetch particular user
+app.get('/users/:id', (req, res) => {
+    const _id = req.params.id
+    User.findById(_id).then((user) => {
+        if (!user) {
+            return res.status(404).json({
+                msg: `No user with id ${_id} found`
+            })
+        }
+        res.send(user)
+    }).catch((err) => {
+        res.status(500).send()
+    })
+})
+
 // Creating Task
 app.post('/tasks', (req, res) => {
     const task = new Task(req.body)
