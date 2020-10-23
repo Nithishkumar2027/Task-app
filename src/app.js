@@ -70,14 +70,31 @@ app.get('/users/:id', async (req, res) => {
 // Updating particular user
 app.patch('/users/:id', async (req, res) => {
     const _id = req.params.id
+
+    // Validation
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name', 'email', 'password']
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update))
+
+    if (!isValidOperation) {
+        return res.status(400).json({
+            msg: 'Ivalid updates!'
+        })
+    }
+
     try {
         const user = await User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
 
         if (!user) {
             return res.status(404).send()
         }
+
+        res.json({
+            msg: 'User updated',
+            user
+        })
     } catch (err) {
-        res.status(500).send()
+        res.status(400).send(err)
     }
 })
 
