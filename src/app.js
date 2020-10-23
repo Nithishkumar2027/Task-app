@@ -16,7 +16,7 @@ app.use(morgan('dev'))
 app.use(cors())
 
 app.get('/', (req, res) => {
-    res.json({ msg: 'Task app 👋'})
+    res.json({ msg: 'Task app 👋' })
 })
 
 // Creating user
@@ -76,7 +76,7 @@ app.post('/tasks', (req, res) => {
 })
 
 // Fetching tasks
-app.get('/tasks', (req,res) => {
+app.get('/tasks', (req, res) => {
     Task.find({}).then((tasks) => {
         res.json(tasks)
     }).catch((err) => {
@@ -88,7 +88,7 @@ app.get('/tasks', (req,res) => {
 app.get('/tasks/:id', (req, res) => {
     const _id = req.params.id
     Task.findById(_id).then((task) => {
-        if(!task){
+        if (!task) {
             return res.status(404).json({
                 msg: 'Task not found'
             })
