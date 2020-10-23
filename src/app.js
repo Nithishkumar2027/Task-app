@@ -20,43 +20,51 @@ app.get('/', (req, res) => {
 })
 
 // Creating user
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     const user = new User(req.body)
-    user.save().then((result) => {
+    try {
+        await user.save()
         res.status(201).json({
             msg: 'Hurray! User created 🎉',
-            result
+            user
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(400).json({
             msg: 'Error in creating user',
             err
         })
-    })
+    }
 })
 
 // Fetching all users
-app.get('/users', (req, res) => {
-    User.find({}).then((users) => {
+app.get('/users', async (req, res) => {
+
+    try {
+        const users = await User.find({})
         res.json(users)
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send()
-    })
+    }
+
 })
 
 // Fetch particular user
-app.get('/users/:id', (req, res) => {
+app.get('/users/:id', async (req, res) => {
     const _id = req.params.id
-    User.findById(_id).then((user) => {
+
+    try {
+        const user = await User.findById(_id)
         if (!user) {
             return res.status(404).json({
-                msg: 'No user  found'
+                msg: 'No user found'
             })
         }
+
         res.send(user)
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send()
-    })
+    }
+
 })
 
 // Creating Task
