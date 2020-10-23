@@ -146,5 +146,34 @@ app.get('/tasks/:id', async (req, res) => {
 
 })
 
+// Updating a particular Task
+app.patch('/tasks/:id', async (req, res) => {
+    const _id = req.params.id
+
+    // Validations
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['description', 'completed']
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update))
+
+    if (!isValidOperation) {
+        return res.status(400).json({ msg: 'Ivalid update' })
+    }
+
+    try {
+        const task = await Task.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
+
+        if (!task) {
+            return res.status(404).send()
+        }
+
+        res.json({
+            msg: 'Task updated',
+            task
+        })
+    } catch (err) {
+        res.status(500).send()
+    }
+})
+
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
