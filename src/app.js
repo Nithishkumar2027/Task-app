@@ -68,43 +68,51 @@ app.get('/users/:id', async (req, res) => {
 })
 
 // Creating Task
-app.post('/tasks', (req, res) => {
+app.post('/tasks', async (req, res) => {
     const task = new Task(req.body)
-    task.save().then((result) => {
+
+    try {
+        await task.save()
         res.status(201).json({
             msg: 'Task created successfully 🔥',
-            result
+            task
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(400).json({
             msg: 'Error in creating Task',
             err
         })
-    })
+    }
 })
 
 // Fetching tasks
-app.get('/tasks', (req, res) => {
-    Task.find({}).then((tasks) => {
+app.get('/tasks', async (req, res) => {
+
+    try {
+        const tasks = await Task.find({})
         res.json(tasks)
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send()
-    })
+    }
+
 })
 
 // Fetching particular task
-app.get('/tasks/:id', (req, res) => {
+app.get('/tasks/:id', async (req, res) => {
     const _id = req.params.id
-    Task.findById(_id).then((task) => {
+
+    try {
+        const task = await Task.findById(_id)
         if (!task) {
             return res.status(404).json({
                 msg: 'Task not found'
             })
         }
         res.json(task)
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send()
-    })
+    }
+
 })
 
 const port = process.env.PORT || 3000
