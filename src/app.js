@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const bcrypt = require('bcryptjs')
 
 // Importing connection 
 require('./db/mongoose')
@@ -25,5 +26,14 @@ app.get('/', (req, res) => {
     res.json({ msg: 'Task app 👋' })
 })
 
+const myFunction = async () => {
+    const password = 'helloww'
+    const hashedPassword = await bcrypt.hash(password, 8)
+
+    console.log(password)
+    console.log(hashedPassword)
+}
+
+myFunction()
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
