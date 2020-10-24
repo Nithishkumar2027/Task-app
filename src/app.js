@@ -98,6 +98,20 @@ app.patch('/users/:id', async (req, res) => {
     }
 })
 
+// Deleting a user
+app.delete('/users/:id', async (req, res) => {
+    const _id = req.params.id
+    try {
+        const user = await User.findByIdAndDelete(_id)
+        if (!user) {
+            return res.status(400).send()
+        }
+        res.json({ msg: 'User deleted', user })
+    } catch (err) {
+        res.status(500).send()
+    }
+})
+
 // Creating Task
 app.post('/tasks', async (req, res) => {
     const task = new Task(req.body)
