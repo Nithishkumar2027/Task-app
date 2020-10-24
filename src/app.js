@@ -189,5 +189,19 @@ app.patch('/tasks/:id', async (req, res) => {
     }
 })
 
+// Deleting a task
+app.delete('/tasks/:id', async (req, res) => {
+    const _id = req.params.id
+    try {
+        const task = await Task.findByIdAndDelete(_id)
+        if (!task) {
+            return res.status(400).send()
+        }
+        res.json({ msg: 'Task deleted', task })
+    } catch (err) {
+        res.status(500).send(err)
+    }
+})
+
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
