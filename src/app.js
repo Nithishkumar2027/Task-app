@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
-const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 // Importing connection 
 require('./db/mongoose')
@@ -26,17 +26,17 @@ app.get('/', (req, res) => {
     res.json({ msg: 'Task app 👋' })
 })
 
-// const myFunction = async () => {
-//     const password = 'helloww'
-//     const hashedPassword = await bcrypt.hash(password, 8)
+// Testing creation of web token
+const myFunction = async () => {
+    const token = jwt.sign({ _id: 'gumbi' }, 'secret', { expiresIn: '5 seconds' })
+    console.log(token)
 
-//     console.log(password)
-//     console.log(hashedPassword)
+    // To verify the token
+    const data = jwt.verify(token, 'secret')
+    console.log(data)
+}
 
-//     const isMatch = await bcrypt.compare('password', hashedPassword)
-//     console.log(isMatch)
-// }
+myFunction()
 
-// myFunction()
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
