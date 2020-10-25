@@ -37,6 +37,6 @@ app.get('/', (req, res) => {
 //     console.log(isMatch)
 // }
 
-myFunction()
+// myFunction()
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
