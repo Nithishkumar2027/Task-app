@@ -26,17 +26,17 @@ app.get('/', (req, res) => {
     res.json({ msg: 'Task app 👋' })
 })
 
-// Testing creation of web token
-const myFunction = async () => {
-    const token = jwt.sign({ _id: 'gumbi' }, 'secret', { expiresIn: '5 seconds' })
-    console.log(token)
+// // Testing creation of web token
+// const myFunction = async () => {
+//     const token = jwt.sign({ _id: 'gumbi' }, 'secret', { expiresIn: '5 seconds' })
+//     console.log(token)
 
-    // To verify the token
-    const data = jwt.verify(token, 'secret')
-    console.log(data)
-}
+//     // To verify the token
+//     const data = jwt.verify(token, 'secret')
+//     console.log(data)
+// }
 
-myFunction()
+// myFunction()
 
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
