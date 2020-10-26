@@ -111,7 +111,7 @@ router.post('/users/signin', async (req, res) => {
     }
 })
 
-// User signout
+// User signout in current session
 router.post('/users/signout', auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
@@ -119,6 +119,17 @@ router.post('/users/signout', auth, async (req, res) => {
         })
         await req.user.save()
         res.json({ msg: 'User Signed out' })
+    } catch (err) {
+        res.status(500).send()
+    }
+})
+
+// User signout in all session
+router.post('/users/signoutall', auth, async (req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.json({ msg: 'Logged out from all sessions' })
     } catch (err) {
         res.status(500).send()
     }
