@@ -98,7 +98,7 @@ router.delete('/users/:id', async (req, res) => {
     }
 })
 
-// User login
+// User signin
 router.post('/users/signin', async (req, res) => {
     const data = req.body
     try {
@@ -108,6 +108,19 @@ router.post('/users/signin', async (req, res) => {
         res.send({ user, token })
     } catch (err) {
         res.status(400).send()
+    }
+})
+
+// User signout
+router.post('/users/signout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.json({ msg: 'User Signed out' })
+    } catch (err) {
+        res.status(500).send()
     }
 })
 
