@@ -16,20 +16,6 @@ const taskRouter = require('./routers/taskRoutes')
 
 const app = express()
 
-// Testing middlewares
-app.use((req, res, next) => {
-    if (req.method === 'GET') {
-        res.send('Get requests are disabed')
-    } else {
-        next()
-    }
-})
-
-// Under maintenance middleware function
-app.use((req, res, next) => {
-    res.status(503).send('Site is currently down 😞. Check back soon!')
-})
-
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(cors())
