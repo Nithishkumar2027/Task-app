@@ -26,7 +26,23 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         minlength: 7
-    }
+    },
+    age: {
+        type: Number,
+        required: true,
+        default: 0,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Age must be a positive number')
+            }
+        }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 
 userSchema.pre('save', async function (next) {
@@ -45,6 +61,10 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, 'secret')
+
+    user.tokens = user.tokens.concat({ token })
+    await user.save()
+
     return token
 }
 
