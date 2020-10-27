@@ -45,6 +45,13 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+// Creating virtual field
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'createdBy'
+})
+
 userSchema.pre('save', async function (next) {
     const user = this
 
