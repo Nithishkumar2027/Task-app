@@ -29,27 +29,8 @@ router.get('/users/me', auth, async (req, res) => {
     res.json(req.user)
 })
 
-// Fetch particular user
-router.get('/users/:id', async (req, res) => {
-    const _id = req.params.id
-
-    try {
-        const user = await User.findById(_id)
-        if (!user) {
-            return res.status(404).json({
-                msg: 'No user found'
-            })
-        }
-
-        res.send(user)
-    } catch (err) {
-        res.status(500).send()
-    }
-
-})
-
 // Updating particular user
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
     const _id = req.params.id
 
     // Validation
@@ -64,35 +45,24 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
-        const user = await User.findById(_id)
-
-        updates.forEach((update) => user[update] = req.body[update])
-        await user.save()
-
-        // const user = await User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
-
-        if (!user) {
-            return res.status(404).send()
-        }
+        updates.forEach((update) => req.user[update] = req.body[update])
+        await req.user.save()
 
         res.json({
-            msg: 'User updated',
-            user
+            msg: 'Profile updated 🎉',
+            updatedProfile: req.user
         })
     } catch (err) {
         res.status(400).send(err)
     }
 })
 
-// Deleting a user
-router.delete('/users/:id', async (req, res) => {
+// Deleting profile
+router.delete('/users/me', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const user = await User.findByIdAndDelete(_id)
-        if (!user) {
-            return res.status(400).send()
-        }
-        res.json({ msg: 'User deleted', user })
+        await req.user.remove()
+        res.json({ msg: 'Profile deleted', deletedProfile: req.user })
     } catch (err) {
         res.status(500).send()
     }
