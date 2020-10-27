@@ -27,5 +27,14 @@ app.get('/', (req, res) => {
     res.json({ msg: 'Task app 👋' })
 })
 
+// Testing relationship
+
+const test = async () => {
+    const task = await Task.findById('5f9868f8d1f9e239b8a57d0c')
+    await task.populate('createdBy').execPopulate()
+    console.log(task)
+}
+test()
+
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
