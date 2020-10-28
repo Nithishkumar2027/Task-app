@@ -43,13 +43,15 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
+}, {
+    timestamps: true
 })
 
 // Creating virtual field
 userSchema.virtual('tasks', {
     ref: 'Task',
     localField: '_id',
-    foreignField: 'createdBy'
+    foreignField: 'author'
 })
 
 // Statics ----> model methods
@@ -87,7 +89,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre('remove', async function (next) {
     const user = this
-    await Task.deleteMany({ createdBy: user._id })
+    await Task.deleteMany({ author: user._id })
     next()
 })
 
