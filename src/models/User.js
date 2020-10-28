@@ -62,6 +62,13 @@ userSchema.pre('save', async function (next) {
     next()
 })
 
+userSchema.pre('remove', async function (next) {
+    const user = this
+    const deleted = await Task.deleteMany({ createdBy: user._id })
+    console.log(deleted)
+    next()
+})
+
 // Statics ----> model methods
 // methods ----> Instance methods
 
