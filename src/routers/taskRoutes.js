@@ -60,7 +60,7 @@ router.get('/tasks/:id', auth, async (req, res) => {
 })
 
 // Updating a particular Task
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
 
     // Validations
@@ -73,14 +73,12 @@ router.patch('/tasks/:id', async (req, res) => {
     }
 
     try {
-        const task = await Task.findById(_id)
-
-        updates.forEach((update) => task[update] = req.body[update])
-        await task.save()
-
+        const task = await Task.findOne({ _id, createdBy: req.user._id })
         if (!task) {
             return res.status(404).send()
         }
+        updates.forEach((update) => task[update] = req.body[update])
+        await task.save()
 
         res.json({
             msg: 'Task updated',
@@ -92,10 +90,10 @@ router.patch('/tasks/:id', async (req, res) => {
 })
 
 // Deleting a task
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
     try {
-        const task = await Task.findByIdAndDelete(_id)
+        const task = await Task.findOneAndDelete({ _id, createdBy: req.user._id })
         if (!task) {
             return res.status(400).send()
         }
