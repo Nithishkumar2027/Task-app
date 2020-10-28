@@ -27,18 +27,5 @@ app.get('/', (req, res) => {
     res.json({ msg: 'Task app 👋' })
 })
 
-// Testing relationship
-
-const test = async () => {
-    const task = await Task.findById('5f9868f8d1f9e239b8a57d0c')
-    await task.populate('createdBy').execPopulate()
-    // console.log(task)
-
-    const user = await User.findById('5f985d02bccdfb513c6be0e4')
-    await user.populate('tasks').execPopulate()
-    console.log({ 1: task, 2: user.tasks })
-}
-test()
-
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))

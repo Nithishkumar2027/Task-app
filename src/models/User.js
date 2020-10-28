@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
+const Task = require('./Task')
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -52,23 +52,6 @@ userSchema.virtual('tasks', {
     foreignField: 'createdBy'
 })
 
-userSchema.pre('save', async function (next) {
-    const user = this
-
-    if (user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 8)
-    }
-
-    next()
-})
-
-userSchema.pre('remove', async function (next) {
-    const user = this
-    const deleted = await Task.deleteMany({ createdBy: user._id })
-    console.log(deleted)
-    next()
-})
-
 // Statics ----> model methods
 // methods ----> Instance methods
 
@@ -91,6 +74,23 @@ userSchema.methods.toJSON = function () {
 
     return userObject
 }
+// Hashing plain text password before saving
+userSchema.pre('save', async function (next) {
+    const user = this
+
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+
+    next()
+})
+
+userSchema.pre('remove', async function (next) {
+    const user = this
+    await Task.deleteMany({ createdBy: user._id })
+    next()
+})
+
 
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
