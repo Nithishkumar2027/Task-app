@@ -27,14 +27,5 @@ app.get('/', (req, res) => {
     res.json({ msg: 'Task app 👋' })
 })
 
-
-const multer = require('multer')
-const upload = multer({
-    dest: 'images'
-})
-app.post('/upload', upload.single('upload'), (req, res) => {
-    res.send()
-})
-
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server running at port ${port}`))
