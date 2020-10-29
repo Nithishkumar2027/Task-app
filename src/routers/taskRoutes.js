@@ -28,9 +28,15 @@ router.post('/tasks', auth, async (req, res) => {
 // Fetching tasks
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
+    const sort = {}
 
     if (req.query.completed) {
         match.completed = req.query.completed === 'true'
+    }
+    if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+        console.log(sort)
     }
     try {
         // Both approaches will work [by find() and populate()]
@@ -41,7 +47,8 @@ router.get('/tasks', auth, async (req, res) => {
             match,
             options: {
                 limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),
+                sort
             }
         }).execPopulate()
         res.json(req.user.tasks)
