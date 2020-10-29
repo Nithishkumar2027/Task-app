@@ -120,6 +120,8 @@ const upload = multer({
 })
 router.post('/users/me/avatar', upload.single('upload'), (req, res) => {
 	res.json({ msg: 'Picture uploaded successfully' })
+}, (error, req, res, next) => {
+	res.status(400).json({ error: error.message })
 })
 
 
