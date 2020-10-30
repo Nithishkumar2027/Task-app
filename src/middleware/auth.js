@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken')
-const { Error } = require('mongoose')
 const User = require('../models/User')
 
 const auth = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '')
-        const decoded = jwt.verify(token, 'secret')
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
         // console.log('~~~~~Decoded~~~~~~ \n', decoded)
         if (!user) {
