@@ -136,4 +136,18 @@ router.delete('/users/me/avatar', auth, async (req, res) => {
 	}
 })
 
+// Fetching profile pics
+router.get('/users/:id/avatar', async (req, res) => {
+	const user = await User.findById(req.params.id)
+
+	try {
+		if (!user || !user.avatar) {
+			throw new Error('Profile picture not found')
+		}
+		res.set('Content-Type', 'image/jpg')
+		res.send(user.avatar)
+	} catch (err) {
+		res.status(404).json(err)
+	}
+})
 module.exports = router
