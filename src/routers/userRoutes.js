@@ -107,7 +107,6 @@ router.post('/users/signoutall', auth, async (req, res) => {
 
 // Uploading user profile pic
 const upload = multer({
-	dest: 'avatar',
 	limits: {
 		fileSize: 1000000 // filesize should be <= 1mb
 	},
@@ -118,11 +117,23 @@ const upload = multer({
 		cb(undefined, true)
 	}
 })
-router.post('/users/me/avatar', upload.single('upload'), (req, res) => {
+router.post('/users/me/avatar', auth, upload.single('upload'), async (req, res) => {
+	req.user.avatar = req.file.buffer
+	await req.user.save()
 	res.json({ msg: 'Picture uploaded successfully' })
 }, (error, req, res, next) => {
 	res.status(400).json({ error: error.message })
 })
 
+// Deleting profile picture
+router.delete('/users/me/avatar', auth, async (req, res) => {
+	try {
+		req.user.avatar = undefined
+		await req.user.save()
+		res.json({ msg: 'Successfully removed profile picture', deletedPic: req.user.avatar })
+	} catch (err) {
+		res.status(500).send(err)
+	}
+})
 
 module.exports = router
