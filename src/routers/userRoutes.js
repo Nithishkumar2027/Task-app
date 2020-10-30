@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
+const sharp = require('sharp');
 
 const User = require('../models/User')
 const auth = require('../middleware/auth')
@@ -105,7 +106,7 @@ router.post('/users/signoutall', auth, async (req, res) => {
 	}
 })
 
-// Uploading user profile pic
+// Uploading user profile pic 
 const upload = multer({
 	limits: {
 		fileSize: 1000000 // filesize should be <= 1mb
@@ -118,7 +119,9 @@ const upload = multer({
 	}
 })
 router.post('/users/me/avatar', auth, upload.single('upload'), async (req, res) => {
-	req.user.avatar = req.file.buffer
+	const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+	req.user.avatar = buffer
+
 	await req.user.save()
 	res.json({ msg: 'Picture uploaded successfully' })
 }, (error, req, res, next) => {
@@ -144,10 +147,12 @@ router.get('/users/:id/avatar', async (req, res) => {
 		if (!user || !user.avatar) {
 			throw new Error('Profile picture not found')
 		}
-		res.set('Content-Type', 'image/jpg')
+		res.set('Content-Type', 'image/png')
 		res.send(user.avatar)
 	} catch (err) {
 		res.status(404).json(err)
 	}
 })
+
+
 module.exports = router
