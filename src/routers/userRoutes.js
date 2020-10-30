@@ -5,7 +5,7 @@ const sharp = require('sharp');
 
 const User = require('../models/User')
 const auth = require('../middleware/auth')
-const { sendWelcomeEmail } = require('../emails/account')
+const { sendWelcomeEmail, sendCancellationEmail } = require('../emails/account')
 
 // Creating user
 router.post('/users', async (req, res) => {
@@ -65,6 +65,7 @@ router.patch('/users/me', auth, async (req, res) => {
 router.delete('/users/me', auth, async (req, res) => {
 	try {
 		await req.user.remove()
+		sendCancellationEmail(req.user.email, req.user.name)
 		res.json({ msg: 'Profile deleted', deletedProfile: req.user })
 	} catch (err) {
 		res.status(500).send()
